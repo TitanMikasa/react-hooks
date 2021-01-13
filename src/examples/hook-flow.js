@@ -69,27 +69,30 @@ function App() {
   })
 
   React.useEffect(() => {
-    console.log('%cApp: useEffect(() => {})', 'color: LightCoral')
+    console.log('%cApp: 1.useEffect(() => {})', 'color: LightCoral')
     return () => {
-      console.log('%cApp: useEffect(() => {}) cleanup 🧹', 'color: LightCoral')
+      console.log(
+        '%cApp: 1.useEffect(() => {}) cleanup 🧹',
+        'color: LightCoral',
+      )
     }
   })
 
   React.useEffect(() => {
-    console.log('%cApp: useEffect(() => {}, [])', 'color: MediumTurquoise')
+    console.log('%cApp: 2.useEffect(() => {}, [])', 'color: MediumTurquoise')
     return () => {
       console.log(
-        '%cApp: useEffect(() => {}, []) cleanup 🧹',
+        '%cApp: 2.useEffect(() => {}, []) cleanup 🧹',
         'color: MediumTurquoise',
       )
     }
   }, [])
 
   React.useEffect(() => {
-    console.log('%cApp: useEffect(() => {}, [showChild])', 'color: HotPink')
+    console.log('%cApp: 3.useEffect(() => {}, [showChild])', 'color: HotPink')
     return () => {
       console.log(
-        '%cApp: useEffect(() => {}, [showChild]) cleanup 🧹',
+        '%cApp: 3.useEffect(() => {}, [showChild]) cleanup 🧹',
         'color: HotPink',
       )
     }
@@ -111,7 +114,7 @@ function App() {
           margin: 10,
           height: 50,
           width: 50,
-          border: 'solid',
+          border: '1px solid red',
         }}
       >
         {showChild ? <Child /> : null}
