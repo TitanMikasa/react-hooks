@@ -2,13 +2,13 @@
 // 💯 create an ErrorBoundary component
 // http://localhost:3000/isolated/final/06.extra-4.js
 
-import * as React from 'react'
+import * as React from 'react';
 import {
   fetchPokemon,
-  PokemonInfoFallback,
-  PokemonForm,
-  PokemonDataView,
-} from '../pokemon'
+
+
+  PokemonDataView, PokemonForm, PokemonInfoFallback
+} from '../pokemon';
 
 class ErrorBoundary extends React.Component {
   state = {error: null}
