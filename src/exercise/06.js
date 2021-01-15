@@ -1,38 +1,72 @@
 // useEffect: HTTP requests
-// http://localhost:3000/isolated/exercise/06.js
+// 💯 use resetKeys
+// http://localhost:3000/isolated/final/06.extra-8.js
 
-import * as React from 'react';
-// 🐨 you'll want the following additional things from '../pokemon':
-// fetchPokemon: the function we call to get the pokemon info
-// PokemonInfoFallback: the thing we show while we're loading the pokemon info
-// PokemonDataView: the stuff we use to display the pokemon info
-import { fetchPokemon, PokemonDataView, PokemonForm, PokemonInfoFallback } from '../pokemon';
+import * as React from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import {
+  fetchPokemon,
 
-function PokemonInfo({pokemonName}) {
- const [state, setState] = React.usestate({
-   status: pokemonName ? 'pending': 'idle',
-   error: null,
-   pokemon: null
- });
- const {status, pokemon, error} = state;
- React.useEffect(() => {
-   if(!pokemonName) return;
-   setState({status: 'pending'});
-   fetchPokemon(pokemonName).then(pokemon => setState({status: 'resolved', pokemon}))
-   .catch(e => setState({status: 'rejected', error}));
- }, [pokemonName]);
- if(status === 'idle') {return 'please provide pokemon name'}
- else if(status === 'pending') {return <PokemonInfoFallback name={pokemonName} />}
- else if (status === 'rejected') {throw error}
- else if(status === 'resolved') {return <PokemonDataView pokemon={pokemon} />}
- throw new Error('This is impossible');
+
+  PokemonDataView, PokemonForm, PokemonInfoFallback
+} from "../pokemon";
+
+function PokemonInfo({ pokemonName }) {
+  const [state, setState] = React.useState({
+    status: pokemonName ? "pending" : "idle",
+    pokemon: null,
+    error: null,
+  });
+  const { status, pokemon, error } = state;
+
+  React.useEffect(() => {
+    if (!pokemonName) {
+      return;
+    }
+    setState({ status: "pending" });
+    fetchPokemon(pokemonName).then(
+      (pokemon) => {
+        setState({ status: "resolved", pokemon });
+      },
+      (error) => {
+        setState({ status: "rejected", error });
+      }
+    );
+  }, [pokemonName]);
+
+  if (status === "idle") {
+    return "Submit a pokemon";
+  } else if (status === "pending") {
+    return <PokemonInfoFallback name={pokemonName} />;
+  } else if (status === "rejected") {
+    // this will be handled by an error boundary
+    throw error;
+  } else if (status === "resolved") {
+    return <PokemonDataView pokemon={pokemon} />;
+  }
+
+  throw new Error("This should be impossible");
+}
+
+function ErrorFallback({ error, resetErrorBoundary }) {
+  return (
+    <div role="alert">
+      There was an error:{" "}
+      <pre style={{ whiteSpace: "normal" }}>{error.message}</pre>
+      <button onClick={resetErrorBoundary}>Try again</button>
+    </div>
+  );
 }
 
 function App() {
-  const [pokemonName, setPokemonName] = React.useState('')
+  const [pokemonName, setPokemonName] = React.useState("");
 
   function handleSubmit(newPokemonName) {
-    setPokemonName(newPokemonName)
+    setPokemonName(newPokemonName);
+  }
+
+  function handleReset() {
+    setPokemonName("");
   }
 
   return (
@@ -40,10 +74,16 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <PokemonInfo pokemonName={pokemonName} />
+        <ErrorBoundary
+          FallbackComponent={ErrorFallback}
+          onReset={handleReset}
+          resetKeys={[pokemonName]}
+        >
+          <PokemonInfo pokemonName={pokemonName} />
+        </ErrorBoundary>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
